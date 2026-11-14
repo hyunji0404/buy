@@ -1,0 +1,14 @@
+# Vercel 배포에서 제외할 파일 목록입니다.
+# 저장소에는 그대로 남지만, 배포된 사이트에서는 주소로 열어볼 수 없게 됩니다.
+# 사이트 동작에 필요한 index.html, style.css, script.js, assets/, api/는 제외하지 않습니다.
+
+# 기획·작업 규칙 문서
+AGENTS.md
+PRD_*.md
+
+# 로컬 테스트 전용 서버와 편집기 설정
+dev-server.js
+.claude/
+
+# 환경 변수 파일(예시 포함). 실제 키는 Vercel 환경 변수에만 둡니다.
+.env*
