@@ -1643,7 +1643,12 @@ body { font-weight: 500; }
 .page-heading .eyebrow::before, .page-heading .eyebrow::after,
 .guide-hero .eyebrow::before, .guide-hero .eyebrow::after { width: 44px; }
 /* 제목이 영문으로 바뀌어 Aboreto 대문자 디스플레이 서체로 맞추고, 크기는 한 단계 낮춥니다. */
-.page-heading h2, .guide-hero h2 { font-family: var(--font-display); font-size: clamp(28px, 4.2vw, 50px); font-weight: 400; line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; }
+.page-heading h2, .guide-hero h2, .page-heading .page-heading-title { font-family: var(--font-display); font-size: clamp(28px, 4.2vw, 50px); font-weight: 400; line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; }
+/* 상품 진단 띠 제목(문단)도 다른 페이지 h2와 같은 흰 글씨로 맞춥니다. */
+.page-heading .page-heading-title { margin: 0; color: #fff; text-shadow: 0 1px 14px rgba(40, 38, 32, 0.3); }
+.workflow-heading + .intro { padding-top: clamp(28px, 5vw, 64px); }
+/* 예전 모바일 규칙(.section-heading 왼쪽 정렬)이 사진 띠의 라벨을 왼쪽으로 붙이지 않도록 모든 폭에서 가운데 정렬합니다. */
+.page-heading { align-items: center; }
 .page-heading .local-only-label { padding: 8px 18px; font-size: clamp(12px, 1.1vw, 14px); letter-spacing: 0.08em; }
 .guide-lede { font-family: var(--font-serif); font-size: clamp(15px, 1.5vw, 18px); }
 .page-heading, .guide-hero { gap: 18px; }
