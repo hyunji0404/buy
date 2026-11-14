@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#44423e">
+    <meta name="description" content="상품 캡처 한 장으로 옷의 특징을 정리하고, 내 스타일에 맞는지 살펴보세요.">
+    <title>사도 될까? — AI 쇼핑 참견러</title>
+    <!-- Figma 템플릿 서체: 영문 제목(Aboreto), 본문(EB Garamond), 버튼·라벨(Geist), 한글 세리프(Nanum Myeongjo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- 한글 서체: 제목은 Noto Serif KR(굵은 명조), 본문·버튼·입력은 Pretendard -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aboreto&family=EB+Garamond:wght@400;500&family=Geist:wght@400;500;600&family=Noto+Serif+KR:wght@500;600;700&family=Nanum+Pen+Script&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <!-- 파비콘: 모브색 가격표 태그 안의 옷걸이(외부 파일 없이 인라인 SVG) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='10' width='56' height='44' rx='12' fill='%237d7662'/%3E%3Ccircle cx='15' cy='32' r='4' fill='%23f2f2f0'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M33.5 23.5a3.5 3.5 0 1 1 5 3.2c-1 .5-1.5 1.2-1.5 2.3v1'/%3E%3Cpath d='M37 30 24 39c-.9.6-.4 2 .6 2h24.8c1 0 1.5-1.4.6-2L37 30Z'/%3E%3C/g%3E%3C/svg%3E">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <!-- 로고: 가격표 태그 모양(왼쪽 구멍) 안에 옷걸이 심볼 + "사도?" + "될까 / AI SHOPPING" -->
+      <a class="brand logo-tag" href="/" aria-label="사도 될까? 홈">
+        <span class="logo-tag-hole" aria-hidden="true"></span>
+        <svg class="logo-hanger" viewBox="0 0 40 32" fill="none" aria-hidden="true">
+          <path d="M16.5 8.5a3.5 3.5 0 1 1 5 3.2c-1 .5-1.5 1.2-1.5 2.3v1" />
+          <path d="M20 15 5.3 25.3c-1 .7-.5 2.2.7 2.2h28c1.2 0 1.7-1.5.7-2.2L20 15Z" />
+        </svg>
+        <span class="logo-tag-main" aria-hidden="true">사도?</span>
+        <span class="logo-tag-divider" aria-hidden="true"></span>
+        <span class="logo-tag-sub" aria-hidden="true"><span>될까</span><small>AI SHOPPING</small></span>
+      </a>
+      <!-- 템플릿처럼 얇은 상단 바 안에 브랜드와 메뉴를 한 줄로 둡니다. -->
+      <nav class="main-navigation" aria-label="서비스 메뉴">
+        <button id="workflow-nav" class="nav-button is-active" type="button" aria-current="page">상품 진단</button>
+        <button id="profile-nav" class="nav-button" type="button">내 스타일 프로필</button>
+        <button id="wishlist-nav" class="nav-button" type="button">위시리스트 <span id="wishlist-count" class="nav-count">0</span></button>
+        <button id="guide-nav" class="nav-button" type="button">이용 가이드</button>
+      </nav>
+      <span id="header-step" class="header-step"><span class="step-dot"></span> <span id="header-step-number">STEP 01</span> <span id="header-step-name">상품 분석</span></span>
+    </header>
+
+    <main>
+      <div id="workflow-view">
+      <!-- 서비스의 첫인상과 분석 목적을 짧게 소개합니다. -->
+      <section class="intro" aria-labelledby="page-title">
+        <div class="intro-title">
+          <p class="eyebrow">SHOPPING, WITH A SECOND OPINION</p>
+          <h1 id="page-title">장바구니에 담기 전,<br><span>옷부터 제대로</span> 볼게요.</h1>
+          <p class="intro-copy">상품 화면을 캡처해 올리면 AI가 옷의 특징을 정리해요.<br class="desktop-break"> 태그는 내 눈으로 확인하고 편하게 고칠 수 있어요.</p>
+          <a class="intro-cta" href="#upload-section">캡처 올리러 가기</a>
+        </div>
+        <!-- 오른쪽 장식 카드: 분석 결과가 어떤 모습인지 미리 보여주는 장면이며, 실제 데이터와는 무관합니다. -->
+        <div class="intro-band intro-visual" aria-hidden="true">
+          <div class="hero-card hero-card-tags" data-parallax="0.05">
+            <span class="hero-card-label">AI NOTES</span>
+            <div class="hero-chips"><span>블랙</span><span>레귤러핏</span><span>미니멀</span><span>사계절</span></div>
+          </div>
+          <div class="hero-card hero-card-score" data-parallax="-0.04">
+            <span class="hero-card-label">MY MATCH</span>
+            <strong>82<small>/100</small></strong>
+            <span class="hero-card-note">내 옷장과 잘 어울려요</span>
+          </div>
+          <div class="hero-card hero-card-outfit" data-parallax="0.07">
+            <span class="hero-card-label">OUTFIT 01</span>
+            <span class="hero-card-note">진청 데님 · 아이보리 스니커즈</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 레퍼런스의 어두운 둥근 패널처럼 서비스 흐름을 세 칸으로 요약합니다. -->
+      <section class="feature-strip" aria-labelledby="feature-strip-title">
+        <h2 id="feature-strip-title">캡처 한 장으로,<br><span>사기 전에 한 번 더</span></h2>
+        <p class="feature-strip-copy">충동구매 대신 내 옷장 기준으로. 분석부터 진단, 저장까지 세 단계면 충분해요.</p>
+        <ol class="feature-strip-list">
+          <li><span>01</span><strong>옷 특징 정리</strong><p>색상·핏·기장·계절감·스타일을 태그로 정리해요.</p></li>
+          <li><span>02</span><strong>내 옷장 기준 진단</strong><p>프로필과 보유 기본템으로 점수와 코디를 받아요.</p></li>
+          <li><span>03</span><strong>위시리스트로 비교</strong><p>고민되는 상품은 저장해 두고 나중에 비교해요.</p></li>
+        </ol>
+      </section>
+
+      <section id="upload-section" class="workspace" aria-label="상품 이미지 분석">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">01 / PRODUCT</p>
+            <h2>고민 중인 상품 캡처</h2>
+          </div>
+          <span class="single-image-label">이미지 1장</span>
+        </div>
+
+        <!-- 업로드 영역은 파일 선택 버튼과 드롭 동작을 모두 지원합니다. -->
+        <div id="drop-zone" class="drop-zone" role="group" aria-label="상품 이미지 업로드 영역">
+          <input id="image-input" type="file" accept="image/jpeg,image/png,image/webp" hidden aria-hidden="true">
+          <div id="upload-prompt" class="upload-prompt">
+            <span class="upload-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none">
+                <path d="M24 32V9m0 0-8 8m8-8 8 8M9 29v9a3 3 0 0 0 3 3h24a3 3 0 0 0 3-3v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <strong>이미지를 여기에 놓아주세요</strong>
+            <span>또는 <button id="choose-image" class="text-button" type="button">파일 찾아보기</button></span>
+            <small>JPG · PNG · WEBP, 최대 15MB</small>
+          </div>
+          <div id="preview-wrap" class="preview-wrap" hidden>
+            <img id="image-preview" alt="분석할 상품 이미지 미리보기">
+            <div class="preview-meta">
+              <span id="image-name"></span>
+              <button id="remove-image" class="quiet-button" type="button">이미지 제거</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="privacy-note">
+          <span class="privacy-icon" aria-hidden="true">i</span>
+          <p>이미지는 브라우저에서 최대 1024px로 줄인 뒤 분석에 사용해요. 원본은 저장하지 않으며, 압축 이미지가 분석을 위해 OpenRouter로 전송됩니다.</p>
+        </div>
+
+        <div class="action-row">
+          <p id="file-status" class="helper-text" aria-live="polite">상품 캡처 이미지를 선택해 주세요.</p>
+          <button id="analyze-button" class="primary-button" type="button" disabled>
+            <span class="button-label">옷 특징 분석하기</span>
+            <span class="button-arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 분석 상태와 결과 태그는 이미지가 선택된 뒤에 표시합니다. -->
+      <section id="analysis-section" class="analysis-section" aria-labelledby="analysis-title" hidden>
+        <div class="section-heading result-heading">
+          <div>
+            <p class="eyebrow">02 / AI NOTES</p>
+            <h2 id="analysis-title">이 옷, 이렇게 보여요</h2>
+          </div>
+          <span class="edit-hint">태그를 눌러 직접 수정할 수 있어요</span>
+        </div>
+
+        <div id="loading-state" class="loading-state" role="status" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <div><strong id="loading-title">이미지 속 옷을 살펴보는 중</strong><p id="loading-copy">색상과 핏, 분위기를 정리하고 있어요.</p></div>
+        </div>
+
+        <div id="error-state" class="error-state" role="alert" hidden>
+          <div>
+            <strong id="error-title">분석을 완료하지 못했어요</strong>
+            <p id="error-copy"></p>
+          </div>
+          <button id="retry-button" class="quiet-button" type="button">다시 시도</button>
+        </div>
+
+        <div id="results-panel" class="results-panel" hidden>
+          <div id="tag-groups" class="tag-groups"></div>
+          <div class="result-footer">
+            <p id="result-note" class="result-note"></p>
+            <div class="result-actions">
+              <button id="copy-button" class="secondary-button" type="button">상품 정보 복사</button>
+              <button id="open-diagnosis-button" class="primary-button" type="button">내 스타일로 진단하기 <span class="button-arrow" aria-hidden="true">→</span></button>
+              <button id="reanalyze-button" class="quiet-button" type="button">다시 분석</button>
+            </div>
+          </div>
+          <p id="copy-status" class="copy-status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <!-- 상품 태그와 임시 프로필을 받아 구매 진단 결과를 보여줍니다. -->
+      <section id="diagnosis-section" class="diagnosis-section" aria-labelledby="diagnosis-title" hidden>
+        <div class="section-heading diagnosis-heading">
+          <div>
+            <p class="eyebrow">03 / YOUR VERDICT</p>
+            <h2 id="diagnosis-title">내 옷장 기준으로 따져볼게요</h2>
+          </div>
+          <button id="back-to-product-button" class="quiet-button" type="button">상품 태그 보기</button>
+        </div>
+
+        <form id="diagnosis-form" class="profile-card">
+          <div class="profile-card-heading">
+            <div>
+              <h3>내 스타일 정보</h3>
+              <p>앱에는 저장되지 않지만 진단을 위해 상품 정보와 함께 OpenRouter로 전송돼요.</p>
+            </div>
+            <span class="optional-label">취향은 선택 입력</span>
+          </div>
+
+          <div class="profile-grid">
+            <label class="profile-field">
+              <span>퍼스널컬러 <small>선택</small></span>
+              <input id="personal-color" name="personalColor" type="text" maxlength="60" placeholder="예: 봄 웜 라이트">
+            </label>
+            <label class="profile-field">
+              <span>선호 핏 <small>쉼표로 구분</small></span>
+              <input id="preferred-fits" name="preferredFits" type="text" maxlength="240" placeholder="레귤러핏, 세미오버핏">
+            </label>
+            <label class="profile-field">
+              <span>기피 핏 <small>쉼표로 구분</small></span>
+              <input id="avoid-fits" name="avoidFits" type="text" maxlength="240" placeholder="극단적 오버핏">
+            </label>
+            <label class="profile-field">
+              <span>선호 스타일 <small>쉼표로 구분</small></span>
+              <input id="preferred-styles" name="preferredStyles" type="text" maxlength="240" placeholder="미니멀, 클래식">
+            </label>
+            <label class="profile-field">
+              <span>기피 스타일 <small>쉼표로 구분</small></span>
+              <input id="avoid-styles" name="avoidStyles" type="text" maxlength="240" placeholder="스트리트">
+            </label>
+            <label class="profile-field wardrobe-field">
+              <span>보유 기본템 <small>진단 필수 · 한 줄에 하나</small></span>
+              <textarea id="wardrobe-basics" name="wardrobeBasics" rows="4" maxlength="3000" placeholder="진청 스트레이트 데님 | 진청 | 스트레이트 | 하의&#10;아이보리 스니커즈 | 아이보리 | 해당 없음 | 신발"></textarea>
+              <small class="field-help">형식: 아이템 이름 | 색상 | 핏 | 종류. 이름만 적어도 괜찮아요.</small>
+            </label>
+          </div>
+
+          <div class="diagnosis-form-footer">
+            <p id="profile-status" class="helper-text" aria-live="polite">코디를 만들려면 보유 기본템을 한 개 이상 적어 주세요.</p>
+            <button id="diagnose-button" class="primary-button" type="submit" disabled>
+              <span class="diagnose-button-label">구매 진단 시작</span>
+              <span class="button-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+        </form>
+
+        <div id="diagnosis-loading" class="loading-state diagnosis-loading" role="status" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <div><strong id="diagnosis-loading-title">내 스타일과 비교하는 중</strong><p id="diagnosis-loading-copy">상품 특징과 보유 기본템으로 코디를 구성하고 있어요.</p></div>
+        </div>
+
+        <div id="diagnosis-error" class="error-state diagnosis-error" role="alert" hidden>
+          <div>
+            <strong id="diagnosis-error-title">진단을 완료하지 못했어요</strong>
+            <p id="diagnosis-error-copy"></p>
+          </div>
+          <button id="retry-diagnosis-button" class="quiet-button" type="button">다시 시도</button>
+        </div>
+
+        <div id="diagnosis-results" class="diagnosis-results" hidden>
+          <article class="score-card">
+            <div class="score-main">
+              <p class="eyebrow">MY MATCH SCORE</p>
+              <div class="score-number-row"><strong id="diagnosis-score" class="score-number"></strong><span>/ 100</span></div>
+              <span id="score-label" class="score-label"></span>
+            </div>
+            <div class="score-summary">
+              <p id="diagnosis-summary"></p>
+              <span>입력한 취향과 상품 정보에 기반한 AI의 추정 의견이에요.</span>
+            </div>
+          </article>
+
+          <details class="rationale-card">
+            <summary>점수 근거 살펴보기</summary>
+            <ul id="score-rationale" class="rationale-list"></ul>
+          </details>
+
+          <div class="fact-grid">
+            <section class="fact-card pros-card" aria-labelledby="pros-title">
+              <div class="fact-heading"><span aria-hidden="true">＋</span><h3 id="pros-title">잘 맞는 점</h3></div>
+              <div id="pros-list" class="fact-list"></div>
+            </section>
+            <section class="fact-card cons-card" aria-labelledby="cons-title">
+              <div class="fact-heading"><span aria-hidden="true">−</span><h3 id="cons-title">냉정하게 볼 점</h3></div>
+              <div id="cons-list" class="fact-list"></div>
+            </section>
+          </div>
+
+          <section class="outfits-section" aria-labelledby="outfits-title">
+            <div class="outfits-heading">
+              <div><p class="eyebrow">THREE WAYS TO WEAR</p><h3 id="outfits-title">내 기본템으로 이렇게 입어요</h3></div>
+              <span>보유 목록만 사용</span>
+            </div>
+            <div id="outfit-list" class="outfit-list"></div>
+          </section>
+
+          <div id="diagnosis-caveats" class="caveat-box" hidden>
+            <strong>확인하면 좋을 점</strong>
+            <ul id="caveat-list"></ul>
+          </div>
+
+          <p id="diagnosis-fallback-note" class="fallback-note" hidden>요청이 몰려 대체 모델로 진단했어요.</p>
+          <div class="diagnosis-save-row">
+            <p id="wishlist-save-status" class="helper-text" aria-live="polite"></p>
+            <button id="save-wishlist-button" class="secondary-button" type="button">위시리스트에 저장</button>
+          </div>
+        </div>
+      </section>
+      </div>
+
+      <section id="profile-page" class="page-section profile-page" aria-labelledby="profile-page-title" hidden>
+        <div class="section-heading page-heading">
+          <div>
+            <p class="eyebrow">YOUR STYLE, YOUR CLOSET</p>
+            <h2 id="profile-page-title" lang="en">My Style Profile</h2>
+          </div>
+          <span class="local-only-label" lang="en">Saved only in this browser</span>
+        </div>
+
+        <div id="profile-storage-alert" class="storage-alert" role="alert" hidden>
+          <p id="profile-storage-message"></p>
+          <button id="recover-profile-storage" class="quiet-button" type="button">손상된 프로필 데이터 초기화</button>
+        </div>
+
+        <form id="style-profile-form" class="profile-page-card">
+          <section class="profile-block" aria-labelledby="personal-color-title">
+            <div class="profile-block-heading">
+              <h3 id="personal-color-title">퍼스널컬러</h3>
+              <span>선택 입력</span>
+            </div>
+            <div class="personal-color-row">
+              <label class="profile-field" for="saved-personal-color">
+                <span class="visually-hidden">퍼스널컬러 선택</span>
+                <select id="saved-personal-color">
+                  <option value="unknown">잘 모르겠음</option>
+                  <option>봄 웜 라이트</option>
+                  <option>봄 웜 브라이트</option>
+                  <option>여름 쿨 라이트</option>
+                  <option>여름 쿨 뮤트</option>
+                  <option>가을 웜 뮤트</option>
+                  <option>가을 웜 딥</option>
+                  <option>겨울 쿨 브라이트</option>
+                  <option>겨울 쿨 딥</option>
+                  <option value="custom">직접 입력</option>
+                </select>
+              </label>
+              <input id="custom-personal-color" class="custom-personal-color" type="text" maxlength="60" placeholder="퍼스널컬러를 입력해 주세요" hidden>
+            </div>
+          </section>
+
+          <div class="profile-preference-grid">
+            <fieldset class="profile-block preference-block">
+              <legend>선호 스타일</legend>
+              <div id="preferred-style-choices" class="choice-tags"></div>
+              <div class="tag-add-row">
+                <input id="add-preferred-style-input" type="text" maxlength="40" placeholder="스타일 직접 추가" aria-label="선호 스타일 직접 추가">
+                <button id="add-preferred-style" class="small-action" type="button">추가</button>
+              </div>
+            </fieldset>
+            <fieldset class="profile-block preference-block">
+              <legend>기피 스타일</legend>
+              <div id="avoided-style-choices" class="choice-tags"></div>
+              <div class="tag-add-row">
+                <input id="add-avoided-style-input" type="text" maxlength="40" placeholder="기피 스타일 직접 추가" aria-label="기피 스타일 직접 추가">
+                <button id="add-avoided-style" class="small-action" type="button">추가</button>
+              </div>
+            </fieldset>
+            <fieldset class="profile-block preference-block">
+              <legend>선호 핏</legend>
+              <div id="preferred-fit-choices" class="choice-tags"></div>
+              <div class="tag-add-row">
+                <input id="add-preferred-fit-input" type="text" maxlength="40" placeholder="핏 직접 추가" aria-label="선호 핏 직접 추가">
+                <button id="add-preferred-fit" class="small-action" type="button">추가</button>
+              </div>
+            </fieldset>
+            <fieldset class="profile-block preference-block">
+              <legend>기피 핏</legend>
+              <div id="avoided-fit-choices" class="choice-tags"></div>
+              <div class="tag-add-row">
+                <input id="add-avoided-fit-input" type="text" maxlength="40" placeholder="기피 핏 직접 추가" aria-label="기피 핏 직접 추가">
+                <button id="add-avoided-fit" class="small-action" type="button">추가</button>
+              </div>
+            </fieldset>
+          </div>
+
+          <section class="profile-block wardrobe-block" aria-labelledby="wardrobe-title">
+            <div class="profile-block-heading">
+              <div><h3 id="wardrobe-title">보유 기본템</h3><p>색상·핏/기장·종류를 고르고 한 줄 메모로 아이템을 구체화해요.</p></div>
+            </div>
+            <div class="wardrobe-builder">
+              <div id="wardrobe-choice-groups" class="wardrobe-choice-groups"></div>
+              <label class="profile-field wardrobe-note-field">
+                <span>한 줄 텍스트 <small>선택 · 아이템 이름이나 활용 메모</small></span>
+                <input id="wardrobe-note-input" type="text" maxlength="80" placeholder="예: 출근용 검정 로퍼">
+              </label>
+              <p id="wardrobe-preview" class="wardrobe-preview">종류를 선택하고 아이템 정보를 조립해 주세요.</p>
+              <div class="wardrobe-builder-actions">
+                <button id="save-wardrobe-item" class="secondary-button" type="button" disabled>기본템 추가</button>
+                <button id="cancel-wardrobe-edit" class="quiet-button" type="button" hidden>수정 취소</button>
+              </div>
+            </div>
+            <div id="wardrobe-list" class="wardrobe-list"></div>
+            <p id="wardrobe-empty" class="empty-hint">아직 등록된 기본템이 없어요. 태그를 조립해 추가해 보세요.</p>
+          </section>
+
+          <div class="profile-save-row">
+            <p id="profile-save-status" class="helper-text" aria-live="polite">변경사항은 저장 버튼을 눌러야 유지돼요.</p>
+            <button id="save-profile-button" class="primary-button" type="submit">프로필 저장</button>
+          </div>
+          <p class="local-storage-note">프로필과 기본템은 이 브라우저의 LocalStorage에만 저장돼요. 브라우저 데이터를 삭제하면 함께 사라질 수 있습니다.</p>
+        </form>
+      </section>
+
+      <section id="wishlist-page" class="page-section wishlist-page" aria-labelledby="wishlist-page-title" hidden>
+        <div class="section-heading page-heading">
+          <div>
+            <p class="eyebrow">YOUR CONSIDERED LIST</p>
+            <h2 id="wishlist-page-title" lang="en">The Wishlist Book</h2>
+          </div>
+          <span id="wishlist-total" class="local-only-label" lang="en">0 saved</span>
+        </div>
+        <div id="wishlist-storage-alert" class="storage-alert" role="alert" hidden>
+          <p id="wishlist-storage-message"></p>
+          <button id="recover-wishlist-storage" class="quiet-button" type="button">손상된 위시리스트 데이터 초기화</button>
+        </div>
+        <p class="local-storage-note wishlist-note">저장한 상품과 진단 결과는 이 브라우저에만 보관돼요. 브라우저 데이터를 삭제하면 함께 사라질 수 있습니다.</p>
+        <div class="wishlist-toolbar">
+          <label class="search-field">
+            <span class="visually-hidden">위시리스트 검색</span>
+            <input id="wishlist-search" type="search" placeholder="카테고리, 색상, 총평, 메모 검색">
+          </label>
+          <label class="sort-field">
+            <span class="visually-hidden">위시리스트 정렬</span>
+            <select id="wishlist-sort">
+              <option value="recent">최근 저장순</option>
+              <option value="score">점수 높은순</option>
+            </select>
+          </label>
+        </div>
+        <p id="wishlist-status" class="helper-text wishlist-status" aria-live="polite"></p>
+        <div id="wishlist-list" class="wishlist-list"></div>
+        <div id="wishlist-empty" class="empty-state" hidden>
+          <strong>아직 저장한 상품이 없어요.</strong>
+          <p>상품 진단 결과에서 위시리스트에 저장해 보세요.</p>
+          <button id="go-to-workflow-button" class="secondary-button" type="button">상품 진단으로 가기</button>
+        </div>
+        <div id="wishlist-no-results" class="empty-state" hidden>
+          <strong>검색 결과가 없어요.</strong>
+          <p>다른 검색어를 입력해 보세요.</p>
+        </div>
+      </section>
+
+      <!-- 이용 가이드: 서비스 흐름과 입력할 수 있는 핏·색상·스타일 예시를 한곳에 모아 보여줍니다.
+           선택지 목록은 script.js의 실제 옵션 배열에서 그려서 화면과 입력 항목이 어긋나지 않게 합니다. -->
+      <section id="guide-page" class="page-section guide-page" aria-labelledby="guide-page-title" hidden>
+        <header class="guide-hero">
+          <p class="eyebrow">HOW TO USE</p>
+          <h2 id="guide-page-title" lang="en">How It Works</h2>
+          <p class="guide-lede" lang="en">One screenshot and a few lines about your closet.<br class="desktop-break"> Three steps to think twice before you buy.</p>
+          <span class="guide-ornament" aria-hidden="true"></span>
+        </header>
+
+        <ol class="guide-steps">
+          <li class="guide-step">
+            <span class="guide-step-number" aria-hidden="true">I</span>
+            <p class="eyebrow">STEP 01</p>
+            <h3>내 스타일 프로필 만들기</h3>
+            <p>퍼스널컬러, 좋아하는 스타일과 핏, 피하고 싶은 핏을 고르고 갖고 있는 기본템을 등록해요. 한 번 저장하면 이 브라우저에 보관돼요.</p>
+            <button class="guide-link" type="button" data-guide-go="profile">프로필 만들러 가기</button>
+          </li>
+          <li class="guide-step">
+            <span class="guide-step-number" aria-hidden="true">II</span>
+            <p class="eyebrow">STEP 02</p>
+            <h3>상품 캡처 올리고 분석하기</h3>
+            <p>쇼핑몰 상품 화면을 캡처해 올리면 AI가 카테고리·색상·핏·기장·계절감·스타일을 태그로 정리해요. 틀린 태그는 눌러서 바로 고칠 수 있어요.</p>
+            <button class="guide-link" type="button" data-guide-go="workflow">상품 분석하러 가기</button>
+          </li>
+          <li class="guide-step">
+            <span class="guide-step-number" aria-hidden="true">III</span>
+            <p class="eyebrow">STEP 03</p>
+            <h3>구매 진단 받고 저장하기</h3>
+            <p>내 프로필과 비교한 점수, 잘 맞는 점과 냉정하게 볼 점, 보유 기본템으로 만든 코디 세 가지를 보여줘요. 고민되는 상품은 위시리스트에 저장해 두세요.</p>
+            <button class="guide-link" type="button" data-guide-go="wishlist">위시리스트 보기</button>
+          </li>
+        </ol>
+
+        <section class="guide-block" aria-labelledby="guide-fit-title">
+          <div class="guide-block-heading">
+            <p class="eyebrow">FIT GUIDE</p>
+            <h3 id="guide-fit-title">핏 종류 한눈에 보기</h3>
+            <p>점선은 몸 라인이에요. 몸과 옷 사이 여유가 클수록 오버핏에 가까워요.</p>
+          </div>
+          <div id="guide-fit-list" class="guide-fit-list"></div>
+          <p class="guide-subnote">기본템을 등록할 때는 <span id="guide-wardrobe-fits"></span> 중에서 고를 수 있어요.</p>
+        </section>
+
+        <section class="guide-block" aria-labelledby="guide-color-title">
+          <div class="guide-block-heading">
+            <p class="eyebrow">COLOR PALETTE</p>
+            <h3 id="guide-color-title">아이템 색상 예시</h3>
+            <p>기본템 색상은 아래 선택지에서 골라요. 견본 색은 이해를 돕기 위한 대략적인 톤이에요.</p>
+          </div>
+          <ul id="guide-color-list" class="guide-color-list"></ul>
+        </section>
+
+        <section class="guide-block guide-two-col" aria-label="스타일과 아이템 분류 예시">
+          <div>
+            <div class="guide-block-heading">
+              <p class="eyebrow">STYLE</p>
+              <h3>스타일 키워드</h3>
+              <p>선호·기피 스타일에서 고를 수 있고, 목록에 없으면 직접 추가해도 돼요.</p>
+            </div>
+            <dl id="guide-style-list" class="guide-style-list"></dl>
+          </div>
+          <div>
+            <div class="guide-block-heading">
+              <p class="eyebrow">WARDROBE</p>
+              <h3>기본템 분류</h3>
+              <p>종류와 기장을 함께 고르면 코디 추천이 더 정확해져요.</p>
+            </div>
+            <p class="guide-chip-label">종류</p>
+            <ul id="guide-type-list" class="guide-chip-list"></ul>
+            <p class="guide-chip-label">기장</p>
+            <ul id="guide-length-list" class="guide-chip-list"></ul>
+          </div>
+        </section>
+
+        <section class="guide-block guide-example" aria-labelledby="guide-example-title">
+          <div class="guide-block-heading">
+            <p class="eyebrow">EXAMPLE</p>
+            <h3 id="guide-example-title">기본템은 이렇게 적어요</h3>
+            <p>색상 · 핏 · 종류를 고르고 한 줄 메모를 더하면 이런 형태로 저장돼요.</p>
+          </div>
+          <!-- 옷 행택 카드: 위쪽 모서리를 깎은 가격표 모양에 끈 구멍을 두고, 항목별로 색상·핏·기장·종류를 적습니다. -->
+          <ul class="guide-example-list hangtag-list">
+            <li class="hangtag"><strong>진청 스트레이트 데님</strong><dl><dt>색상</dt><dd>진청</dd><dt>핏</dt><dd>스트레이트</dd><dt>기장</dt><dd>기본</dd><dt>종류</dt><dd>하의</dd></dl></li>
+            <li class="hangtag"><strong>아이보리 스니커즈</strong><dl><dt>색상</dt><dd>아이보리</dd><dt>핏</dt><dd>해당 없음</dd><dt>기장</dt><dd>해당 없음</dd><dt>종류</dt><dd>신발</dd></dl></li>
+            <li class="hangtag"><strong>출근용 검정 로퍼</strong><dl><dt>색상</dt><dd>검정</dd><dt>핏</dt><dd>해당 없음</dd><dt>기장</dt><dd>해당 없음</dd><dt>종류</dt><dd>신발</dd></dl></li>
+            <li class="hangtag"><strong>회색 크루넥 니트</strong><dl><dt>색상</dt><dd>회색</dd><dt>핏</dt><dd>레귤러</dd><dt>기장</dt><dd>기본</dd><dt>종류</dt><dd>상의</dd></dl></li>
+          </ul>
+        </section>
+
+        <aside class="guide-tips" aria-labelledby="guide-tips-title">
+          <h3 id="guide-tips-title">더 정확하게 쓰는 팁</h3>
+          <ul>
+            <li>상품 사진이 크게 보이는 화면을 캡처하면 색상과 핏을 더 잘 읽어요.</li>
+            <li>AI 태그는 이미지 기반 추정이라 실제 상세 정보와 다를 수 있어요. 진단 전에 꼭 확인하고 고쳐 주세요.</li>
+            <li>보유 기본템은 자주 입는 것부터 5개 이상 적어 두면 코디 추천이 풍부해져요.</li>
+          </ul>
+          <button class="primary-button" type="button" data-guide-go="workflow">지금 시작하기 <span class="button-arrow" aria-hidden="true">→</span></button>
+        </aside>
+      </section>
+    </main>
+
+    <!-- 푸터: 가로 사진 띠 위에 영문 한 줄만 둡니다. AI 추정 안내는 화면 읽기 프로그램용으로만 남깁니다. -->
+    <footer class="site-footer site-footer-photo">
+      <p class="footer-tagline">Shopping,<br>with a second opinion.</p>
+      <span class="visually-hidden">사도 될까? AI 결과는 이미지 기반 추정이며 실제 상품 정보와 다를 수 있어요.</span>
+    </footer>
+  </body>
+</html>

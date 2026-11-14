@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "buy-dev", "runtimeExecutable": "node", "runtimeArgs": ["dev-server.js"], "port": 3000 },
+    { "name": "buy-dev-3010", "runtimeExecutable": "env", "runtimeArgs": ["PORT=3010", "node", "dev-server.js"], "port": 3010 }
+  ]
+}
